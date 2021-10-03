@@ -15,11 +15,44 @@
 import random
 
 n = random.randint(0, 100)
-print(n)
-
-def guessing(n)
+print(n)  # подсмотреть загаданное число
 
 
+def guessing(n):
+    print('Угадай число от 0 до 100 за 10 попыток')
+    count = 0
+
+    def check_num():
+        nonlocal count
+        try:
+            num = int(input(f'Попыток осталось {10 - count}. Введи число: '))
+            if num == n:
+                print('Число угадано')
+                return
+            elif num < n:
+                print('Загаданное число больше')
+                count += 1
+                if count < 10:
+                    check_num()
+                else:
+                    print('Попытки закончились')
+            else:
+                print('Загаданное число меньше')
+                count += 1
+                if count < 10:
+                    check_num()
+                else:
+                    print('Попытки закончились')
+        except Exception:
+            print('Введено не число')
+            count += 1
+            if count < 10:
+                check_num()
+
+    check_num()
+
+
+'''Много кода, зато мне нравится как оформлено'''
 
 if __name__ == '__main__':
-    guessing()
+    guessing(n)
