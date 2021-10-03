@@ -21,16 +21,31 @@
 
 
 def even_odd(num):
-    if num // 10 == 0:
+    def odd(num):
+        if num // 10 == 0:
+            return 1 if num % 2 else 0
+        return odd(num % 10) + odd(num // 10)
 
-        return 1 if num % 2 else 0
-    else:
-        return even_odd(num % 10) + even_odd(num // 10)
+    def even(num):
+        if num // 10 == 0:
+            return 0 if num % 2 else 1
+        return even(num % 10) + even(num // 10)
+
+    return even(num), odd(num)
 
 
-
-
+'''Получилась функция с двумя рекурсивными. Лучше не смог придумать'''
+# def even_odd(num):
+#
+#     def odd(num):
+#         return 1 if num % 10 else 0 if num // 10 == 0 else odd(num % 10) + odd(num // 10)
+#
+#     def even(num):
+#         return 0 if num % 10 else 1 if num // 10 == 0 else odd(num % 10) + odd(num // 10)
+#
+#     return even(num), odd(num)
+'''Попытался вспомнить тернарные операторы, что-то не срастается...'''
 
 
 if __name__ == '__main__':
-    print(even_odd(11245))
+    print(even_odd(112453545345))
