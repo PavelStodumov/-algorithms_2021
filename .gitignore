@@ -1,0 +1,12 @@
+
+.idea/
+
+*.py
+
+venv/Lib/site-packages/_distutils_hack/__pycache__/__init__.cpython-39.pyc
+
+venv/Lib/site-packages/_distutils_hack/__pycache__/
+
+venv/Lib/site-packages/
+
+venv/

@@ -21,3 +21,18 @@
 Решите через рекурсию. Решение через цикл не принимается.
 Для оценки Отлично в этом блоке необходимо выполнить 5 заданий из 7
 """
+
+
+def ascii_table(start, stop):
+    if start <= stop:
+        if start % 10 == 1:
+            print(f'{start} - {chr(start)}', end='\n')
+        else:
+            print(f'{start} - {chr(start)}', end=' ')
+        start += 1
+        ascii_table(start, stop)
+'''Вроде похоже... можно даже с любого символа по любой выводить, только вывод по 10 не получится красивый'''
+
+if __name__ == '__main__':
+    ascii_table(32, 127)
+    #ascii_table(50, 100)

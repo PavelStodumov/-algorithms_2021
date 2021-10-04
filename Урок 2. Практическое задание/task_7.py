@@ -16,3 +16,17 @@
 Решите через рекурсию. Решение через цикл не принимается.
 Для оценки Отлично в этом блоке необходимо выполнить 5 заданий из 7
 """
+
+
+def demonstration(n):
+    if n == 1:
+        return 1
+    else:
+        # return demonstration(n - 1) + n == int(n * (n + 1) / 2)
+        return demonstration(n - 1) + n
+
+
+'''Объясните пожалуйста, почему закоментированный вывод даёт False? '''
+if __name__ == '__main__':
+    print(demonstration(5), type(demonstration(5)))
+    print(int(5 * (5 + 1) / 2), type(int(5 * (5 + 1) / 2)))
