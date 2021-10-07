@@ -15,3 +15,19 @@ url : хеш-url
 
 Задание творческое. Здесь нет жестких требований к выполнению.
 """
+import hashlib
+
+my_cache = {}
+def caching(url, cache=my_cache):
+    salt = 'salt'
+    if url in cache:
+        return cache[url]
+    cache[url] = hashlib.sha256(salt.encode() + url.encode()).hexdigest()
+    return cache[url]
+
+
+caching('vk')
+print(my_cache)
+caching('auto')
+print(my_cache)
+print(caching('vk'))

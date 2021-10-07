@@ -20,3 +20,14 @@
 Обязательно усложните задачу! Добавьте сохранение хеша в файле и получение его из файла.
 А если вы знаете как через Python работать с БД, привяжите к заданию БД и сохраняйте хеши там.
 """
+import hashlib
+
+salt = 'salt'
+password = input('Введите пароль: ')
+pas = hashlib.sha256(salt.encode() + password.encode()).hexdigest()
+print(pas)
+password_t = input('Введите пароль ещё раз для проверки: ')
+if hashlib.sha256(salt.encode() + password_t.encode()).hexdigest() == pas:
+    print('Вы ввели правильный пароль')
+else:
+    print('Вы ввели неправильный пароль')
