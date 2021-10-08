@@ -36,19 +36,19 @@ def measure(func):
 @measure
 def create_list():
     # return [chr(i) for i in range(127)]  # хотел выводить таблицу ascii но элементов мало для замера
-    return [i for i in range(10**6)]  # Сложность O(n)
+    return [i for i in range(10 ** 6)]  # Сложность O(n)
 
 
 @measure
 def create_dict():
     # return {i: chr(i) for i in range(127)}  # Сложность линейная
-    return {i: i for i in range(10**6)}  # Сложность O(n)
+    return {i: i for i in range(10 ** 6)}  # Сложность O(n)
 
 
 @measure
 def create_dict_2():
     # return {i: chr(j) for i in range(127) for j in range(i + 1)}
-    return {i: j for i in range(10**6) for j in
+    return {i: j for i in range(10 ** 6) for j in
             range(i + 1)}  # Сложность O(n**2) т.к. значение высчитывается вторым циклом => выполняется медленнее
 
 
@@ -78,22 +78,54 @@ def delete_elem(obj, key=None):
         return obj.pop(key)  # Удаление из словаря O(1)
 
 
+###################################################################################################
+@measure
+def delete_few_elem(obj, end_elem, start_elem=0):
+    for i in range(start_elem, end_elem + 1):
+        obj.pop(i)
+    return obj
+
+@measure
+def add_few_elem(obj, value):
+    if type(obj) == list:
+        for i in range(10**6, 10**6 + value):
+            obj.append(i)
+        return obj
+    else:
+        for i in range(10**6, 10**6 + value):
+            obj[i] = [i]
+        return obj
+
+@measure
+def get_few_elem(obj, end_elem, start_elem=0):
+    if type(obj) == list:
+        l = []
+        for i in range(start_elem, end_elem + 1):
+            l.append(i)
+        return l
+    else:
+        d = {}
+        for i in range(start_elem, end_elem + 1):
+            d[i] = obj[i]
+        return d
+
+
 print('создание списка: ', end=" ")
 my_list = create_list()
 
-print('Добавление злемента в конец списка: ', end=" ")
-add_obj(my_list, 30)
-print(my_list[-10:])
+# print('Добавление злемента в конец списка: ', end=" ")
+# add_obj(my_list, 30)
+# print(my_list[-10:])
 
-print('Добавление злемента в начало списка: ', end=" ")
-add_obj(my_list, 25, index=0)
-print(my_list[:10])
+# print('Добавление злемента в начало списка: ', end=" ")
+# add_obj(my_list, 25, index=0)
+# print(my_list[:10])
 
-print('Извлечение злемента списка: ', end=" ")
-print(get_elem(my_list, 55))
-
-print('Удаление злемента из начала списка: ', end=" ")
-print(delete_elem(my_list, 0))
+# print('Извлечение злемента списка: ', end=" ")
+# print(get_elem(my_list, 55))
+#
+# print('Удаление злемента из начала списка: ', end=" ")
+# print(delete_elem(my_list, 0))
 
 print('создание словаря: ', end=" ")
 my_dict = create_dict()
@@ -101,13 +133,39 @@ my_dict = create_dict()
 # print('создание словаря 2й функцией: ', end=" ")  # долго выполняется
 # my_dict = create_dict_2()
 
-print('Добавляем элемент в словарь: ', end=" ")
-add_obj(my_dict, 'A', index='a')
+# print('Добавляем элемент в словарь: ', end=" ")
+# add_obj(my_dict, 'A', index='a')
+#
+# print('Извлекаем элемент из словаря: ', end=" ")
+# print(get_elem(my_dict, 'a'))
+#
+# print('Удаление злемента словаря: ', end=" ")
+# print(delete_elem(my_dict, 'a'))
+#############################################################################################
+print('Удаление 500 элементов списка: ', end=" ")
+delete_few_elem(my_list, 500)
 
-print('Извлекаем элемент из словаря: ', end=" ")
-print(get_elem(my_dict, 'a'))
+print('Удаление 500 элементов словаря: ', end=" ")
+delete_few_elem(my_dict, 500)
 
-print('Удаление злемента словаря: ', end=" ")
-print(delete_elem(my_dict, 'a'))
+print('Добавляем в список 5000 элементов: ', end=' ')
+add_few_elem(my_list, 5000)
 
-'''С временем выполнения не очень понятно. все операции показывают 0'''
+print('Добавляем в словарь 5000 элементов: ', end=' ')
+add_few_elem(my_dict, 5000)
+
+print('Извлечение 5000 элементов списка: ', end=" ")
+get_few_elem(my_list, 5000)
+
+print('Извлечение 5000 элементов словаря: ', end=" ")
+get_few_elem(my_list, 5000)
+
+
+
+#'''С временем выполнения не очень понятно. все операции показывают 0'''
+'''Переделал - вроде прояснилось.
+Словарь создаётся дольше чем список(хеширование ключей)
+Удаляются элементы дольше из списка, если идёт пересчёт индексов
+Добавляются элементы дольше в словарь(хеширование), если сравнивать с добавлением в конец списка(переиндексация)
+Извлекаются быстрее из словаря 
+хотя цыфры всё равно неоднозначные'''
