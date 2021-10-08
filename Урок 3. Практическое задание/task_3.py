@@ -25,15 +25,21 @@
 s = input()
 substrings = []
 while len(s) > 1:
-    substrings.append(hash(s[0]))
-    substrings.append(hash(s[1:]))
-    substrings.append(hash(s[-1]))
-    substrings.append(hash(s[:-1]))
-    s = s[1:]
+    # substrings.append(hash(s[0]))
+    # substrings.append(hash(s[1:]))
+    # substrings.append(hash(s[-1]))
+    # substrings.append(hash(s[:-1]))
 
-# не
-print(substrings)
-print(len(set(substrings)))
+    substrings.append(s[0])
+    substrings.append(s[1:])
+    substrings.append(s[-1])
+    substrings.append(s[:-1])
+
+    s = s[1:]
+substrings = set(substrings)
+cache = [hash(i) for i in substrings]
+# print(substrings, cache)
+print(len(cache))
 
 '''Не знаю, так ли надо было решить (есть подозрение что не так), но результат есть результат.
 Проверял на разных строках вроде верно'''
