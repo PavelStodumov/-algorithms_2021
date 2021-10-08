@@ -32,14 +32,14 @@ try:
     insert_password = '''INSERT INTO passwords (password) VALUES (?);'''
 
     salt = input('Введите логин: ')
-    password = input('Введите пароль: ')
-    pas = hashlib.sha256(salt.encode() + password.encode()).hexdigest()
-    cursor.execute('''SELECT password FROM passwords''')
-    if (pas,) not in cursor.fetchall():
-        cursor.execute(insert_password, (pas,))
 
-    # cursor.execute('''SELECT password FROM passwords''')
-    # print(cursor.fetchall()) # список паролей, хранящихся в БД
+    password = hashlib.sha256(salt.encode() + input('Введите пароль: ').encode()).hexdigest()
+    cursor.execute('''SELECT password FROM passwords''')
+    if (password,) not in cursor.fetchall():
+        cursor.execute(insert_password, (password,))
+
+    cursor.execute('''SELECT password FROM passwords''')
+    print(cursor.fetchall())  # список паролей, хранящихся в БД
 
     connection.commit()
 
