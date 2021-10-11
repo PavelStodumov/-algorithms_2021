@@ -31,6 +31,7 @@ print(
         "recursive_reverse(num_100)",
         setup='from __main__ import recursive_reverse, num_100',
         number=10000))
+
 print(
     timeit(
         "recursive_reverse(num_1000)",
@@ -49,10 +50,12 @@ def memoize(f):
     def decorate(*args):
 
         if args in cache:
+            print(cache)  # посмотрел кеш
             return cache[args]
         else:
             cache[args] = f(*args)
             return cache[args]
+
     return decorate
 
 
@@ -68,14 +71,18 @@ print(
     timeit(
         'recursive_reverse_mem(num_100)',
         setup='from __main__ import recursive_reverse_mem, num_100',
-        number=10000))
+        number=1))  # 10000))
+
 print(
     timeit(
         'recursive_reverse_mem(num_1000)',
         setup='from __main__ import recursive_reverse_mem, num_1000',
-        number=10000))
+        number=1))  # 10000))
 print(
     timeit(
         'recursive_reverse_mem(num_10000)',
         setup='from __main__ import recursive_reverse_mem, num_10000',
-        number=10000))
+        number=1))  # 10000))
+
+'''Мемоизация не нужна, так как при каждом выполнении recursive_reverse_mem() в кеш добавляется количество элементов, равное количеству знаков в числе, что приводит к неоправданно большому расходу памяти. 
+Замеры показывают колосальный прирост скорости только потому что с декоратором идет расчет рекурсией один раз, а потом остальные тестовые разы значение получается из кеша. В реальных условиях, (при передаче разных аргументов), скорость с мемоизацией будет ниже, а расход памяти больше.(из за создания словаря)'''
