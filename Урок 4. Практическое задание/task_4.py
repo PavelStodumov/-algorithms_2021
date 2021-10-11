@@ -11,14 +11,20 @@
 
 Без аналитики задание считается не принятым!
 """
+from timeit import timeit
+from random import randint
 
-array = [1, 3, 1, 3, 4, 5, 1]
+# array = [1, 3, 1, 3, 4, 5, 1] # слишком маленький массив для тестов
+
+
+array = [randint(1, 10) for _ in range(100)]  # тесты на массивах разных размеров
 
 
 def func_1():
     m = 0
     num = 0
-    for i in array:
+    for i in array:  # перебор массива целиком (в том числе повторных элементов) не целесообразно
+        # for i in set(array): # перебор только не повторяющихся элементов значительно ускорит работу
         count = array.count(i)
         if count > m:
             m = count
@@ -31,13 +37,22 @@ def func_2():
     new_array = []
     for el in array:
         count2 = array.count(el)
-        new_array.append(count2)
-
+        new_array.append(count2)  # создание зеркального списка с количеством элементов исходного
+    # тратится много ресурсов(и памяти и вычислений) на создание второго массива. Самое плохое решение
     max_2 = max(new_array)
     elem = array[new_array.index(max_2)]
     return f'Чаще всего встречается число {elem}, ' \
            f'оно появилось в массиве {max_2} раз(а)'
 
 
-print(func_1())
-print(func_2())
+def func_3():
+    d = {array.count(i): i for i in set(array)}  # быстрое и лаконичное решение
+    return f'Чаще всего встречается число {d[max(d)]}, ' \
+           f'оно появилось в массиве {max(d)} раз(а)'
+
+
+print('func_1()', timeit('func_1()', globals=globals(), number=1000), func_1())
+print('func_2()', timeit('func_2()', globals=globals(), number=1000), func_2())
+print('func_3()', timeit('func_3()', globals=globals(), number=1000), func_3())
+
+'''Решение со словарём получилось быстрое, но если func_1 доработать как я указал, скорость будет почти такая же'''
