@@ -31,10 +31,10 @@ from timeit import timeit, default_timer
 # a.Вычислить сумму тех чисел из этого списка, сумма цифр которых делится нацело на 7.
 
 def get_mem_time(func):  # декоратор для замера памяти
-    def wrapper():
+    def wrapper(*args):
         m_start = memory_profiler.memory_usage()[0]
         t_start = default_timer()
-        r = func()
+        r = func(*args)
         print(f'потреблено: {memory_profiler.memory_usage()[0] - m_start} памяти')
         print(f'затрачено: {default_timer() - t_start} времени')
         return r
@@ -61,10 +61,10 @@ def func():
     return f'результат: {get_sum()}'
 
 
-# print('V 1.0', func(), end='\n\n')
+print('V 1.0', func(), end='\n\n')
 
 
-# V2.0 используем list comprehensions вместо списка
+# V2.0 используем генератор вместо списка
 @get_mem_time
 def func():
     numbers = (number ** 3 for number in range(1, 1000000, 2))
@@ -84,7 +84,9 @@ def func():
     return f'результат: {get_sum()}'
 
 
-# print('V 2.0', func(), end='\n\n')
+print('V 2.0', func(), end='\n\n')
+
+
 # получили экономию памяти
 
 # V2.1
@@ -93,9 +95,10 @@ def func():
     return f'результат: {sum(i for i in (number ** 3 for number in range(1, 1000000, 2)) if sum(map(lambda x: int(x), str(i))) % 7 == 0)}'
 
 
-# print('V 2.1', func(), end='\n\n')
+print('V 2.1', func(), end='\n\n')
 '''Используя встроенные методы получил лаконичное решение в одну строчку, первому решению оно проигрывает по времени, а второму и по времени и по памяти, к сожалению. Можно ли это считать оптимизацией?'''
-
+######################################################################################################################
+print('######################################################################################################################')
 '''Реализуйте структуру "доска задач".
 Структура должна предусматривать наличие несольких очередей задач, например,
 1) базовой, откуда задачи берутся, решаются и отправляются в список решенных
@@ -124,17 +127,89 @@ class Turn:
     def debaging_compleate(self):
         self.compleated.append(self.debagging.pop(0))
 
+
 # будем создавать список объектов класса Turn:
 
 @get_mem_time
-def turn_list():
+def turn_list(cls):
     list = []
     for i in range(100000):
-        obj = Turn()
-
+        obj = cls
         obj.add_task('task1')
         list.append(obj)
-    print(len(list))
+    print(f'Количество объектов класса {cls}', len(list))
     return list[-1]
 
-print(turn_list())
+
+print(turn_list(Turn()), end='\n\n')
+
+
+# создадим дочерний класс с атрибутами, хранящимися в списке
+class Turn_2(Turn):
+    __slots__ = ['tasks', 'debagging', 'compleated']
+
+
+print(turn_list(Turn_2()), end='\n\n')  # получаем существенную экономию памяти
+
+
+# создадим дочерний класс от дочернего класса, переопределим некоторые методы, вместо list используем deque
+class Turn_3(Turn_2):
+    def __init__(self):
+        self.tasks = collections.deque()
+        self.debagging = collections.deque()
+        self.compleated = collections.deque()
+
+    def compleate(self):
+        self.compleated.append(self.tasks.popleft())
+
+    def debagg(self):
+        self.debagging.append(self.tasks.popleft())
+
+    def debaging_compleate(self):
+        self.compleated.append(self.debagging.popleft())
+
+
+# создадим объекты классов
+obj_T2 = Turn_2()
+obj_T3 = Turn_3()
+
+# будем добавлять задачи и потом их удалять как завершенные
+@get_mem_time
+def add_compleate(obj, n):
+    for i in range(n):
+        obj.add_task(i)
+
+    for i in range(n):
+        obj.compleate()
+
+
+
+add_compleate(obj_T2, 100000)
+add_compleate(obj_T3, 100000)
+# Благодоря deque при работе с началом списка наблюдается прирост скорости
+
+######################################################################################################################
+print('######################################################################################################################')
+
+"""Найти сумму n элементов следующего ряда чисел: 1 -0.5 0.25 -0.125 ..."""
+
+
+@get_mem_time
+def f(n):
+    def some_sum(n):
+        return 1 if n == 1 else 1 + some_sum(n-1)/-2
+    return some_sum(n)
+print(f(100), end='\n\n')
+
+@get_mem_time
+def some_sum_2(n): # используем цикл вместо рекурсии
+    el = 1
+    s = 0
+    for i in range(n):
+        s += el
+        el /= -2
+    return s
+
+print(some_sum_2(100))
+# потребление памяти уменьшилось
+
