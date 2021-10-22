@@ -17,3 +17,46 @@
 Сделайте выводы!!!
 Опишите в чем была ваша доработка и помогла ли вам доработка??
 """
+from random import randint
+from timeit import timeit
+
+my_list = [randint(-100, 100) for _ in range(100)]
+
+
+def bubble_sort(ls):
+    count = 0
+    for _ in range(0, len(ls) - 1):
+        for j in range(len(ls) - 1):
+            if ls[j] < ls[j + 1]:
+                ls[j], ls[j + 1] = ls[j + 1], ls[j]
+            count += 1
+    return ls, count
+
+
+def bubble_sort_2(ls):
+    count = 0
+    for _ in range(0, len(ls) - 1):
+        f = True
+        for j in range(len(ls) - 1):
+            if ls[j] < ls[j + 1]:
+                ls[j], ls[j + 1] = ls[j + 1], ls[j]
+                f = False  # если перестановок не происходит флаг не меняется - выводим отсортированный список
+            count += 1
+        if f == True:
+            return ls, count
+    return ls, count
+
+
+print(bubble_sort(my_list[:]))
+t1 = timeit('bubble_sort(my_list[:])', globals=globals(), number=1000)
+print(t1)
+
+print(bubble_sort_2(my_list[:]))
+t2 = timeit('bubble_sort_2(my_list[:])', globals=globals(), number=1000)
+print(t2)
+print(f'Прирост скорости : {(t1 - t2) / t1 * 100} %')  # вроде правильно посчитал
+print(my_list)  # исходный список не изменился
+
+'''Добавил в функцию счетчик количества итераций, который возвращается вместе с отсортированным списком, чтобы было нагляднее. В доработанной функции итераций меньше, следовательно скорость должна возрасти. Замеры показывали прирост скорости от 0,3 до 20 процентов. Зависит от того, как быстро отсортируется список'''
+
+# позапускайте несколько раз
